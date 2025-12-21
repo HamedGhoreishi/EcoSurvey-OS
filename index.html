@@ -3,199 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سامانه پژوهشی</title>
+    <title>سامانه پژوهشی EconGraph</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     
     <style>
+        /* =========================================
+           1. تعریف متغیرهای تم‌ها (Themes System)
+           ========================================= */
+        
+        /* پیش‌فرض: نئونی (Neon/Dark) */
         :root {
-            --primary: #00d2d3; /* فیروزه‌ای نئونی */
+            --font-main: 'Vazirmatn', sans-serif;
+            --primary: #00d2d3;
             --accent: #54a0ff;
-            --bg-body: #1e272e; /* مشکی عمیق */
-            --card-bg: rgba(47, 54, 64, 0.95); /* شیشه‌ای تیره */
+            --bg-body: #1e272e;
+            --card-bg: rgba(47, 54, 64, 0.95);
             --text-main: #f5f6fa;
             --text-sub: #a4b0be;
             --border-color: #576574;
+            --input-bg: rgba(0,0,0,0.3);
             --card-radius: 24px;
+            --blob-opacity: 0.25;
+            --shadow-color: rgba(0,0,0,0.5);
+            --blob-1: #00d2d3; --blob-2: #5f27cd;
         }
+
+        /* تم زرشکی (Crimson) */
+        body.theme-crimson {
+            --primary: #990033; --accent: #ff4757;
+            --bg-body: #f8f9fa; --card-bg: rgba(255, 255, 255, 0.96);
+            --text-main: #2d3436; --text-sub: #636e72;
+            --border-color: #dfe6e9; --input-bg: #f1f2f6;
+            --card-radius: 24px; --blob-opacity: 0.5;
+            --shadow-color: rgba(0,0,0,0.1);
+            --blob-1: #ffcbd6; --blob-2: #e0e7ff;
+        }
+
+        /* تم رسمی (Corporate) */
+        body.theme-corporate {
+            --primary: #0984e3; --accent: #74b9ff;
+            --bg-body: #f1f2f6; --card-bg: #ffffff;
+            --text-main: #2d3436; --text-sub: #636e72;
+            --border-color: #dfe6e9; --input-bg: #f8f9fa;
+            --card-radius: 16px; --blob-opacity: 0.4;
+            --shadow-color: rgba(0,0,0,0.08);
+            --blob-1: #74b9ff; --blob-2: #81ecec;
+        }
+
+        /* تم مینیمال (Minimal) */
+        body.theme-minimal {
+            --primary: #000000; --accent: #333333;
+            --bg-body: #ffffff; --card-bg: #ffffff;
+            --text-main: #000000; --text-sub: #666666;
+            --border-color: #000000; --input-bg: transparent;
+            --card-radius: 0px; --blob-opacity: 0.05;
+            --shadow-color: transparent;
+            --blob-1: #bdc3c7; --blob-2: #ecf0f1;
+        }
+
+        /* تم سایبرپانک (Cyberpunk) */
+        body.theme-cyberpunk {
+            --font-main: 'Courier New', monospace;
+            --primary: #fcee0a; --accent: #ff003c;
+            --bg-body: #050505; --card-bg: #000000;
+            --text-main: #fcee0a; --text-sub: #00d2d3;
+            --border-color: #fcee0a; --input-bg: #111;
+            --card-radius: 0px; --blob-opacity: 0.2;
+            --shadow-color: rgba(255, 0, 60, 0.2);
+            --blob-1: #ff003c; --blob-2: #00d2d3;
+        }
+
+        /* تم طبیعت (Nature) */
+        body.theme-nature {
+            --primary: #2d6a4f; --accent: #d4a373;
+            --bg-body: #eaf4f4; --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #1b4332; --text-sub: #52796f;
+            --border-color: #b7e4c7; --input-bg: #f0fff4;
+            --card-radius: 30px; --blob-opacity: 0.7;
+            --shadow-color: rgba(45, 106, 79, 0.1);
+            --blob-1: #95d5b2; --blob-2: #d8f3dc;
+        }
+
+        /* تم یخی (Frost) */
+        body.theme-frost {
+            --primary: #ffffff; --accent: #a2d2ff;
+            --bg-body: #a29bfe; --card-bg: rgba(255, 255, 255, 0.25);
+            --text-main: #fff; --text-sub: #dfe6e9;
+            --border-color: rgba(255,255,255,0.4); --input-bg: rgba(255,255,255,0.15);
+            --card-radius: 24px; --blob-opacity: 0.5;
+            --shadow-color: rgba(31, 38, 135, 0.37);
+            --blob-1: #fd79a8; --blob-2: #0984e3;
+        }
+
+        /* =========================================
+           2. استایل‌های اصلی (Core CSS)
+           ========================================= */
 
         * { box-sizing: border-box; outline: none; }
 
         body {
-            font-family: 'Vazirmatn', sans-serif;
+            font-family: var(--font-main);
             background-color: var(--bg-body);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            /* فاصله حیاتی برای موبایل که کارت نچسبه */
-            padding: 25px; 
-            overflow-x: hidden;
-            flex-direction: column;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; 
+            padding: 25px; /* بهینه‌سازی موبایل: فاصله از لبه‌ها */
+            overflow-x: hidden; flex-direction: column;
+            transition: background-color 0.5s ease;
         }
 
-        /* --- پس‌زمینه متحرک و سبک --- */
         .background-animation {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             overflow: hidden; pointer-events: none;
         }
         .blob {
-            position: absolute; border-radius: 50%;
-            filter: blur(80px); opacity: 0.25; 
-            animation: float 20s infinite alternate linear;
+            position: absolute; border-radius: 50%; filter: blur(80px); 
+            opacity: var(--blob-opacity); 
+            animation: float 25s infinite alternate linear;
         }
-        .b1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--primary); }
-        .b2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #5f27cd; animation-delay: -5s; }
-        
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(30px, -30px); }
-        }
+        .b1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--blob-1); }
+        .b2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--blob-2); animation-delay: -5s; }
+        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, -30px); } }
 
-        /* --- کارت اصلی --- */
+        /* کارت اصلی */
         .container {
-            width: 100%;
-            max-width: 420px;
+            width: 100%; max-width: 420px; /* عرض بهینه */
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border: 1px solid var(--border-color);
             padding: 35px 25px;
             border-radius: var(--card-radius);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            position: relative;
-            /* این خط باعث میشه نوار پیشرفت دقیقا قالب کارت بشه */
-            overflow: hidden; 
-            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px var(--shadow-color);
+            position: relative; 
+            overflow: hidden; /* برش گوشه‌های نوار پیشرفت */
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             display: flex; flex-direction: column;
-            transition: height 0.3s ease;
+            transition: all 0.5s ease;
         }
 
         /* نوار پیشرفت */
-        .progress-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: rgba(255,255,255,0.05); z-index: 10;
-        }
+        .progress-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: rgba(128,128,128,0.1); z-index: 10; }
         .progress-bar {
             height: 100%; width: 0%;
             background: linear-gradient(90deg, var(--primary), var(--accent));
-            box-shadow: 0 0 15px var(--primary);
             transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        /* تایپوگرافی */
-        h1 { margin: 10px 0; font-size: 1.6rem; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: center; }
+        h1 { margin: 10px 0; font-size: 1.6rem; color: var(--text-main); text-align: center; font-weight:800; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .subtitle { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 30px; text-align: center; line-height: 1.6;}
 
         /* ورودی‌ها */
         .form-control {
-            background: rgba(0,0,0,0.3);
-            border: 2px solid var(--border-color);
-            color: #fff;
-            padding: 14px;
-            border-radius: 14px;
-            width: 100%;
-            margin-top: 10px;
+            background: var(--input-bg); border: 2px solid var(--border-color);
+            color: var(--text-main); padding: 14px; border-radius: 14px; width: 100%; margin-top: 10px;
             font-family: inherit; font-size: 1rem; transition: 0.3s;
         }
-        .form-control:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
-        .form-control::placeholder { color: rgba(255,255,255,0.3); }
+        .form-control:focus { border-color: var(--primary); }
+        .form-control::placeholder { color: var(--text-sub); opacity: 0.5; }
 
         /* گزینه‌ها */
         .radio-option {
-            background: rgba(255,255,255,0.03);
-            border: 2px solid var(--border-color);
-            color: #fff;
-            padding: 14px;
-            border-radius: 14px;
-            width: 100%;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex; align-items: center;
-            font-weight: 500;
+            background: var(--input-bg); border: 2px solid var(--border-color);
+            color: var(--text-main); padding: 14px; border-radius: 14px; width: 100%;
+            margin-bottom: 12px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; font-weight: 500;
         }
         .radio-option:active { transform: scale(0.98); }
-        .radio-option:has(input:checked) {
-            border-color: var(--primary);
-            background: rgba(0, 210, 211, 0.15);
-            color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 210, 211, 0.1);
+        .radio-option:has(input:checked) { 
+            border-color: var(--primary); color: var(--primary); 
+            background: rgba(128,128,128,0.05); font-weight: bold;
+            box-shadow: inset 0 0 0 1px var(--primary);
         }
         .radio-option input { display: none; }
 
         /* اسلایدر */
         .range-wrap { padding: 20px 0; }
-        input[type="range"] { width: 100%; accent-color: var(--primary); height: 6px; background: var(--border-color); border-radius: 5px; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); height: 6px; background: var(--border-color); border-radius: 5px; cursor: pointer;}
         .range-display { text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
 
         /* دکمه‌ها */
         .nav-buttons { display: flex; gap: 12px; margin-top: 30px; }
-        button {
-            padding: 15px; border-radius: 14px; border: none; width: 100%;
-            font-family: inherit; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s;
-        }
-        .btn-primary {
-            background: var(--primary); color: #1e272e; flex: 2;
-            box-shadow: 0 5px 20px rgba(0, 210, 211, 0.3);
-        }
-        .btn-primary:active { transform: translateY(2px); }
+        button { padding: 15px; border-radius: 14px; border: none; width: 100%; font-family: inherit; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #fff; flex: 2; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* تنظیم رنگ متن دکمه برای تم‌های تیره/روشن */
+        body:not([class]) .btn-primary, body.theme-cyberpunk .btn-primary { color: #1e272e; } 
+        body.theme-crimson .btn-primary, body.theme-corporate .btn-primary, body.theme-nature .btn-primary { color: #fff; }
+        body.theme-frost .btn-primary { color: #6c5ce7; background: rgba(255,255,255,0.9); }
+
         .btn-secondary { background: transparent; border: 2px solid var(--border-color); color: var(--text-sub); flex: 1; }
 
         /* سوشال مدیا */
         .social-links { display: flex; gap: 10px; justify-content: center; margin-top: 25px; flex-wrap: wrap;}
         .social-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); 
-            color: #fff; padding: 10px 20px; border-radius: 12px; text-decoration: none; 
+            background: rgba(128,128,128,0.1); border: 1px solid var(--border-color); 
+            color: var(--text-main); padding: 10px 20px; border-radius: 12px; text-decoration: none; 
             font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 8px;
         }
-        .social-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .social-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
 
         /* امضا */
         .signature {
             width: 100%; margin-top: 30px; margin-bottom: 10px;
-            font-size: 0.8rem; color: var(--border-color); opacity: 0.6;
+            font-size: 0.8rem; color: var(--text-sub); opacity: 0.7;
             text-align: center; font-weight: 300; letter-spacing: 0.5px;
         }
         .signature span { font-weight: bold; color: var(--primary); opacity: 1; }
 
+        /* استایل خاص برای مینیمال */
+        body.theme-minimal .container { border:none; box-shadow:none; border-bottom: 2px solid #000; border-radius:0; padding-left:0; padding-right:0; width:100%; background:transparent;}
+        body.theme-minimal .btn-primary { border: 2px solid #000; border-radius:0; background:#000; color:#fff;}
+        body.theme-minimal .form-control, body.theme-minimal .radio-option { border:none; border-bottom:1px solid #ddd; border-radius:0; background:transparent;}
+
+        /* لودینگ و انیمیشن */
         .hidden { display: none !important; }
         .fade-enter { animation: fadeEnter 0.4s ease forwards; opacity: 0; transform: translateY(10px); }
         @keyframes fadeEnter { to { opacity: 1; transform: translateY(0); } }
         .loader { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* موبایل */
+        @media (max-width: 480px) {
+            body { padding: 15px; } 
+            .container { padding: 25px 20px; } 
+        }
     </style>
 </head>
 <body>
 
-    <div class="background-animation">
-        <div class="blob b1"></div>
-        <div class="blob b2"></div>
-    </div>
+    <div class="background-animation"><div class="blob b1"></div><div class="blob b2"></div></div>
 
     <div class="container">
         <div class="progress-wrapper"><div id="progress-bar" class="progress-bar"></div></div>
-        
         <div id="loader" class="loader"></div>
 
-        <!-- شروع -->
+        <!-- صفحه شروع -->
         <div id="start-screen" class="hidden fade-enter">
             <h1 id="site-title">...</h1>
             <p id="site-subtitle" class="subtitle">...</p>
-            
             <div style="text-align: right;">
-                <label style="color:#fff; margin-bottom:5px; display:block;">نام شما</label>
+                <label style="color:var(--text-main); margin-bottom:5px; display:block; font-size:0.9rem;">نام شما</label>
                 <input type="text" id="user-name" class="form-control" placeholder="وارد کنید...">
                 <br>
-                <label style="color:#fff; margin-bottom:5px; display:block;">سن</label>
+                <label style="color:var(--text-main); margin-bottom:5px; display:block; font-size:0.9rem;">سن</label>
                 <input type="number" id="user-age" class="form-control" placeholder="مثال: 22">
             </div>
-            
-            <div class="nav-buttons">
-                <button class="btn-primary" id="btn-start" onclick="startQuiz()">شروع</button>
-            </div>
+            <div class="nav-buttons"><button class="btn-primary" id="btn-start" onclick="startQuiz()">شروع</button></div>
         </div>
 
-        <!-- سوالات -->
+        <!-- صفحه سوالات -->
         <div id="quiz-screen" class="hidden">
             <div id="question-box" class="fade-enter"></div>
             <div class="nav-buttons">
@@ -204,11 +259,11 @@
             </div>
         </div>
 
-        <!-- پایان -->
+        <!-- صفحه پایان / تکراری -->
         <div id="end-screen" class="hidden fade-enter" style="text-align: center; padding-top: 20px;">
             <div id="end-emoji" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
             <h2 id="end-title" style="color: var(--primary);">ثبت شد!</h2>
-            <p id="end-msg" style="color: var(--text-sub);">اطلاعات شما با موفقیت ذخیره گردید.</p>
+            <p id="end-msg" style="color: var(--text-sub);">اطلاعات ذخیره شد.</p>
             <div id="social-area" class="social-links hidden"></div>
         </div>
     </div>
@@ -217,16 +272,11 @@
 
     <script>
         // ******************************************************
-        // 👇 لینک وب‌اپلیکیشن خودت رو اینجا بذار 👇
-        const API_URL = "https://script.google.com/macros/s/AKfycbyWxDc8QN0lQfG71-m8d4ipuugZ25hPnXVhAmSH68mbrU74JIxP265Q1YJtVM4UgCKczA/exec";
+        // 👇 لینک وب‌اپلیکیشن خودت رو اینجا جایگزین کن 👇
+        const API_URL = "URL_WEB_APP_KHODET_RO_INJA_BZAR";
         // ******************************************************
 
-        let questions = [];
-        let config = {};
-        let answers = {};
-        let currentStep = 0;
-        let questionStartTime = 0;
-        let timeLogs = {}; 
+        let questions = [], config = {}, answers = {}, currentStep = 0, timeLogs = {}; 
         const urlParams = new URLSearchParams(window.location.search);
         const sourceRef = urlParams.get('ref') || 'direct'; 
 
@@ -238,17 +288,28 @@
                 
                 if (data.config) {
                     config = data.config;
-                    // ضد اسپم + نمایش سوشال مدیا
+                    
+                    // اعمال تم
+                    if (config.theme && config.theme !== 'neon') {
+                        document.body.classList.add(`theme-${config.theme}`);
+                    }
+
+                    // لاجیک تکراری / ضد اسپم
                     const completedQuizzes = JSON.parse(localStorage.getItem('completed_quizzes') || "[]");
                     if (config.title && completedQuizzes.includes(config.title)) {
                         document.getElementById('start-screen').classList.add('hidden');
                         document.getElementById('end-screen').classList.remove('hidden');
+                        
+                        const dupMsg = config.msg_duplicate || `شما قبلاً در آزمون <b>"${config.title}"</b> شرکت کرده‌اید.`;
+                        const dupEmoji = config.emoji_duplicate || "✋";
+
                         document.getElementById('end-title').innerText = "قبلاً شرکت کرده‌اید";
-                        document.getElementById('end-msg').innerHTML = `شما قبلاً در آزمون <b>"${config.title}"</b> شرکت کرده‌اید.`;
-                        document.getElementById('end-emoji').innerText = "✋";
+                        document.getElementById('end-msg').innerHTML = dupMsg;
+                        document.getElementById('end-emoji').innerText = dupEmoji;
                         renderSocialLinks();
                         return;
                     }
+
                     if(config.title) document.getElementById('site-title').innerText = config.title;
                     if(config.subtitle) document.getElementById('site-subtitle').innerText = config.subtitle;
                     if(config.btn_start) document.getElementById('btn-start').innerText = config.btn_start;
@@ -257,15 +318,12 @@
                 }
 
                 if (!data.active) {
-                    document.querySelector('.container').innerHTML = `<div style="text-align:center; padding:20px; color:#fff;"><h2>⛔ آزمون غیرفعال است</h2></div>`;
+                    document.querySelector('.container').innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-main);"><h2>⛔ آزمون غیرفعال است</h2></div>`;
                     return;
                 }
                 questions = data.questions;
                 document.getElementById('start-screen').classList.remove('hidden');
-            } catch (e) {
-                console.error(e);
-                alert("خطا در اتصال به سرور.");
-            }
+            } catch (e) { console.error(e); alert("خطا در اتصال."); }
         };
 
         function startQuiz() {
@@ -274,15 +332,13 @@
             if(!name || !age) return alert("لطفا نام و سن را تکمیل کنید");
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
-            currentStep = 0;
-            showQuestion(currentStep);
+            currentStep = 0; showQuestion(currentStep);
         }
 
         function showQuestion(index) {
             const qBox = document.getElementById('question-box');
             const q = questions[index];
-            const progress = ((index + 1) / questions.length) * 100;
-            document.querySelector('.progress-bar').style.width = `${progress}%`;
+            document.querySelector('.progress-bar').style.width = `${((index + 1) / questions.length) * 100}%`;
             questionStartTime = Date.now();
 
             const badge = q.required ? '<span style="color:#ff4757; margin-right:5px">*</span>' : '';
@@ -299,66 +355,51 @@
             } else if (q.type === 'number') {
                 inputHtml = `<input type="number" class="form-control" value="${savedAns}" placeholder="عدد" oninput="saveAns(${q.id}, this.value)">`;
             } else if (q.type === 'range') {
-                const val = savedAns || "50";
-                if(!savedAns) saveAns(q.id, val);
+                const val = savedAns || "50"; if(!savedAns) saveAns(q.id, val);
                 inputHtml = `<div class="range-wrap"><div class="range-display" id="val_disp">${val}%</div><input type="range" min="0" max="100" value="${val}" oninput="document.getElementById('val_disp').innerText=this.value+'%'; saveAns(${q.id}, this.value)"></div>`;
             }
 
-            qBox.innerHTML = `<h3 style="margin-bottom:20px; line-height:1.5; font-size:1.1rem; color:#fff;">${badge} ${index + 1}. ${q.text}</h3>${inputHtml}`;
+            qBox.innerHTML = `<h3 style="margin-bottom:20px; line-height:1.5; font-size:1.1rem; color:var(--text-main);">${badge} ${index + 1}. ${q.text}</h3>${inputHtml}`;
             qBox.classList.remove('fade-enter'); void qBox.offsetWidth; qBox.classList.add('fade-enter');
 
             document.getElementById('btn-prev').style.visibility = index === 0 ? 'hidden' : 'visible';
             const nextBtn = document.getElementById('btn-next');
             if (index === questions.length - 1) {
                 nextBtn.innerText = config.btn_submit || "ثبت نهایی";
-                nextBtn.style.background = "#2ed573";
-                nextBtn.style.color = "#fff";
+                nextBtn.style.background = "#2ed573"; nextBtn.style.color = "#fff";
             } else {
-                nextBtn.innerText = "بعدی";
-                nextBtn.style.background = ""; // Reset
-                nextBtn.style.color = "";
+                nextBtn.innerText = "بعدی"; nextBtn.style.background = ""; nextBtn.style.color = "";
             }
         }
 
         function saveAns(qid, val) { answers[qid] = val; }
-        function recordTime() {
-            const qId = questions[currentStep].id;
-            timeLogs[qId] = ((Date.now() - questionStartTime) / 1000).toFixed(1);
-        }
         function nextStep() {
             const q = questions[currentStep];
             if (q.required && !answers[q.id]) { alert("پاسخ الزامی است."); return; }
-            recordTime();
-            if (currentStep === questions.length - 1) submitData();
-            else { currentStep++; showQuestion(currentStep); }
+            const qId = questions[currentStep].id;
+            timeLogs[qId] = ((Date.now() - questionStartTime) / 1000).toFixed(1);
+            if (currentStep === questions.length - 1) submitData(); else { currentStep++; showQuestion(currentStep); }
         }
         function prevStep() { if (currentStep > 0) { currentStep--; showQuestion(currentStep); } }
 
         async function submitData() {
-            const btn = document.getElementById('btn-next');
-            btn.disabled = true; btn.innerText = "ارسال...";
+            const btn = document.getElementById('btn-next'); btn.disabled = true; btn.innerText = "ارسال...";
             const answersPayload = Object.keys(answers).map(k => ({ qId: k, answer: answers[k], time: timeLogs[k] || 0 }));
             const payload = { name: document.getElementById('user-name').value, age: document.getElementById('user-age').value, source: sourceRef, answers: answersPayload };
-
             try {
                 await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
                 const completedQuizzes = JSON.parse(localStorage.getItem('completed_quizzes') || "[]");
                 if (config.title && !completedQuizzes.includes(config.title)) {
-                    completedQuizzes.push(config.title);
-                    localStorage.setItem('completed_quizzes', JSON.stringify(completedQuizzes));
+                    completedQuizzes.push(config.title); localStorage.setItem('completed_quizzes', JSON.stringify(completedQuizzes));
                 }
                 document.getElementById('quiz-screen').classList.add('hidden');
                 document.getElementById('end-screen').classList.remove('hidden');
                 renderSocialLinks();
-            } catch (e) {
-                alert("خطا در ارسال.");
-                btn.disabled = false; btn.innerText = "تلاش مجدد";
-            }
+            } catch (e) { alert("خطا در ارسال."); btn.disabled = false; btn.innerText = "تلاش مجدد"; }
         }
 
         function renderSocialLinks() {
-            const container = document.getElementById('social-area');
-            let html = '';
+            const container = document.getElementById('social-area'); let html = '';
             if(config.link_twitter) html += `<a href="${config.link_twitter}" target="_blank" class="social-btn">Twitter</a>`;
             if(config.link_telegram) html += `<a href="${config.link_telegram}" target="_blank" class="social-btn">Telegram</a>`;
             if(config.link_linkedin) html += `<a href="${config.link_linkedin}" target="_blank" class="social-btn">LinkedIn</a>`;
