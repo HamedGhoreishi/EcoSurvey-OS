@@ -2,363 +2,368 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>سامانه پژوهشی</title>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     
     <style>
-    :root {
-        --primary: #0984e3; /* آبی زنده */
-        --primary-light: #e7f5ff;
-        --bg-body: #f1f2f6; /* طوسی خیلی روشن */
-        --text-dark: #2d3436;
-        --card-radius: 16px; /* گوشه‌ها کمی تیزتر */
-    }
+        :root {
+            --primary: #00d2d3; /* فیروزه‌ای نئونی */
+            --accent: #54a0ff;
+            --bg-body: #1e272e; /* مشکی عمیق */
+            --card-bg: rgba(47, 54, 64, 0.95); /* شیشه‌ای تیره */
+            --text-main: #f5f6fa;
+            --text-sub: #a4b0be;
+            --border-color: #576574;
+            --card-radius: 24px;
+        }
 
-    body {
-        font-family: 'Vazirmatn', sans-serif;
-        background-color: var(--bg-body);
-        color: var(--text-dark);
-        display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px;
-        overflow-x: hidden; box-sizing: border-box; flex-direction: column;
-    }
+        * { box-sizing: border-box; outline: none; }
 
-    /* بک گراند ساده و تمیز (بدون حباب) */
-    .background-animation { display: none; } 
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            /* فاصله حیاتی برای موبایل که کارت نچسبه */
+            padding: 25px; 
+            overflow-x: hidden;
+            flex-direction: column;
+        }
 
-    .container {
-        width: 100%; max-width: 450px;
-        background: #ffffff;
-        padding: 40px; border-radius: var(--card-radius);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* سایه نرم */
-        position: relative; display: flex; flex-direction: column; transition: height 0.3s ease; overflow: hidden;
-        border-top: 5px solid var(--primary); /* خط آبی بالای کارت */
-    }
+        /* --- پس‌زمینه متحرک و سبک --- */
+        .background-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            overflow: hidden; pointer-events: none;
+        }
+        .blob {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.25; 
+            animation: float 20s infinite alternate linear;
+        }
+        .b1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--primary); }
+        .b2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #5f27cd; animation-delay: -5s; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, -30px); }
+        }
 
-    .progress-wrapper { display: none; } /* در این تم پروگرس بار مخفی یا ساده است، اینجا حذفش کردم برای سادگی */
-    
-    /* اما اگر پروگرس بار میخوای، اینو بذار: */
-    /*
-    .progress-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: #eee; }
-    .progress-bar { height: 100%; background: var(--primary); }
-    */
+        /* --- کارت اصلی --- */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 35px 25px;
+            border-radius: var(--card-radius);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            position: relative;
+            /* این خط باعث میشه نوار پیشرفت دقیقا قالب کارت بشه */
+            overflow: hidden; 
+            backdrop-filter: blur(10px);
+            display: flex; flex-direction: column;
+            transition: height 0.3s ease;
+        }
 
-    h1 { color: var(--text-dark); text-align: center; font-weight: 700; font-size: 1.5rem; margin: 15px 0; }
-    .subtitle { text-align: center; color: #636e72; margin-bottom: 30px; font-size: 0.9rem; }
-    
-    .form-control {
-        width: 100%; padding: 12px; border: 1px solid #b2bec3; border-radius: 8px;
-        margin-top: 8px; box-sizing: border-box; font-size: 1rem; transition: 0.3s; background: #fff;
-    }
-    .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1); }
+        /* نوار پیشرفت */
+        .progress-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: rgba(255,255,255,0.05); z-index: 10;
+        }
+        .progress-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            box-shadow: 0 0 15px var(--primary);
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
 
-    .nav-buttons { display: flex; gap: 10px; margin-top: 30px; }
-    button { padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
-    .btn-primary { background: var(--primary); color: white; flex: 2; }
-    .btn-primary:hover { background: #0769b5; }
-    .btn-secondary { background: #dfe6e9; color: #636e72; flex: 1; }
+        /* تایپوگرافی */
+        h1 { margin: 10px 0; font-size: 1.6rem; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: center; }
+        .subtitle { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 30px; text-align: center; line-height: 1.6;}
 
-    .radio-option {
-        display: flex; align-items: center; padding: 12px; border: 1px solid #dfe6e9; background: #fff;
-        border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;
-    }
-    .radio-option:hover { background: #f8f9fa; }
-    .radio-option:has(input:checked) { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
-    .radio-option input { display: none; }
-    .radio-option::before { content: ''; width: 16px; height: 16px; border: 2px solid #b2bec3; border-radius: 50%; margin-left: 12px; }
-    .radio-option:has(input:checked)::before { border-color: var(--primary); background: var(--primary); box-shadow: inset 0 0 0 3px #fff; }
+        /* ورودی‌ها */
+        .form-control {
+            background: rgba(0,0,0,0.3);
+            border: 2px solid var(--border-color);
+            color: #fff;
+            padding: 14px;
+            border-radius: 14px;
+            width: 100%;
+            margin-top: 10px;
+            font-family: inherit; font-size: 1rem; transition: 0.3s;
+        }
+        .form-control:focus { border-color: var(--primary); background: rgba(0,0,0,0.5); }
+        .form-control::placeholder { color: rgba(255,255,255,0.3); }
 
-    input[type="range"] { width: 100%; accent-color: var(--primary); height: 4px; background: #dfe6e9; border-radius: 2px; outline: none; }
-    .range-display { text-align: center; font-size: 1.4rem; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
+        /* گزینه‌ها */
+        .radio-option {
+            background: rgba(255,255,255,0.03);
+            border: 2px solid var(--border-color);
+            color: #fff;
+            padding: 14px;
+            border-radius: 14px;
+            width: 100%;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; align-items: center;
+            font-weight: 500;
+        }
+        .radio-option:active { transform: scale(0.98); }
+        .radio-option:has(input:checked) {
+            border-color: var(--primary);
+            background: rgba(0, 210, 211, 0.15);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 210, 211, 0.1);
+        }
+        .radio-option input { display: none; }
 
-    .social-btn { background: #fff; border: 1px solid #b2bec3; color: #2d3436; padding: 8px 16px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;}
-    .social-links { display: flex; gap: 10px; justify-content: center; margin-top: 25px; flex-wrap: wrap;}
+        /* اسلایدر */
+        .range-wrap { padding: 20px 0; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); height: 6px; background: var(--border-color); border-radius: 5px; }
+        .range-display { text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 10px; }
 
-    .signature { width: 100%; margin-top: 25px; margin-bottom: 10px; font-size: 0.8rem; color: #b2bec3; text-align: center; font-weight: 300; }
-    .signature span { font-weight: bold; color: var(--primary); }
+        /* دکمه‌ها */
+        .nav-buttons { display: flex; gap: 12px; margin-top: 30px; }
+        button {
+            padding: 15px; border-radius: 14px; border: none; width: 100%;
+            font-family: inherit; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary); color: #1e272e; flex: 2;
+            box-shadow: 0 5px 20px rgba(0, 210, 211, 0.3);
+        }
+        .btn-primary:active { transform: translateY(2px); }
+        .btn-secondary { background: transparent; border: 2px solid var(--border-color); color: var(--text-sub); flex: 1; }
 
-    .hidden { display: none !important; }
-    .fade-enter { animation: fadeEnter 0.4s ease forwards; opacity: 0; transform: translateY(5px); }
-    @keyframes fadeEnter { to { opacity: 1; transform: translateY(0); } }
-    .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: auto; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+        /* سوشال مدیا */
+        .social-links { display: flex; gap: 10px; justify-content: center; margin-top: 25px; flex-wrap: wrap;}
+        .social-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); 
+            color: #fff; padding: 10px 20px; border-radius: 12px; text-decoration: none; 
+            font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .social-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-    @media (max-width: 480px) {
-        body { padding: 0 25px; align-items: center; justify-content: center; }
-        .container { padding: 30px 20px; border-radius: 12px; margin-top: 0; width: 100%; }
-        h1 { font-size: 1.4rem; }
-    }
-</style>
+        /* امضا */
+        .signature {
+            width: 100%; margin-top: 30px; margin-bottom: 10px;
+            font-size: 0.8rem; color: var(--border-color); opacity: 0.6;
+            text-align: center; font-weight: 300; letter-spacing: 0.5px;
+        }
+        .signature span { font-weight: bold; color: var(--primary); opacity: 1; }
 
-
+        .hidden { display: none !important; }
+        .fade-enter { animation: fadeEnter 0.4s ease forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes fadeEnter { to { opacity: 1; transform: translateY(0); } }
+        .loader { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
 
-<div class="background-animation">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-</div>
-
-<div class="container">
-    <div class="progress-wrapper"><div id="progress-bar" class="progress-bar"></div></div>
-    
-    <div id="loader" class="loader"></div>
-
-    <!-- صفحه شروع -->
-    <div id="start-screen" class="hidden fade-enter">
-        <h1 id="site-title">...</h1>
-        <p id="site-subtitle" class="subtitle">...</p>
-        
-        <div style="text-align: right;">
-            <label style="font-weight: bold; margin-bottom: 5px; display: block; font-size:0.9rem;">نام شما</label>
-            <input type="text" id="user-name" class="form-control" placeholder="نام خود را وارد کنید">
-            <br>
-            <label style="font-weight: bold; margin-bottom: 5px; display: block; font-size:0.9rem;">سن</label>
-            <input type="number" id="user-age" class="form-control" placeholder="مثال: 22">
-        </div>
-        
-        <div class="nav-buttons">
-            <button class="btn-primary" id="btn-start" onclick="startQuiz()">شروع پرسشنامه</button>
-        </div>
+    <div class="background-animation">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
     </div>
 
-    <!-- صفحه سوالات -->
-    <div id="quiz-screen" class="hidden">
-        <div id="question-box" class="fade-enter"></div>
-
-        <div class="nav-buttons">
-            <button class="btn-secondary" id="btn-prev" onclick="prevStep()">قبلی</button>
-            <button class="btn-primary" id="btn-next" onclick="nextStep()">بعدی</button>
-        </div>
-    </div>
-
-    <!-- صفحه پایان / تکراری -->
-    <div id="end-screen" class="hidden fade-enter" style="text-align: center; padding-top: 20px;">
-        <div id="end-emoji" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
-        <h2 id="end-title" style="color: var(--primary);">ثبت شد!</h2>
-        <p id="end-msg" style="color: #57606f;">اطلاعات شما با موفقیت ذخیره گردید.</p>
+    <div class="container">
+        <div class="progress-wrapper"><div id="progress-bar" class="progress-bar"></div></div>
         
-        <div id="social-area" class="social-links hidden"></div>
-    </div>
-</div>
+        <div id="loader" class="loader"></div>
 
-<div class="signature">Designed for <span>Economic Research</span> © 2025</div>
-
-<script>
-    // **********************************************
-    // لینک اسکریپت خودت را اینجا جایگزین کن
-    const API_URL = "https://script.google.com/macros/s/AKfycbyWxDc8QN0lQfG71-m8d4ipuugZ25hPnXVhAmSH68mbrU74JIxP265Q1YJtVM4UgCKczA/exec";
-    // **********************************************
-
-    let questions = [];
-    let config = {};
-    let answers = {};
-    let currentStep = 0;
-    let questionStartTime = 0;
-    let timeLogs = {}; 
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const sourceRef = urlParams.get('ref') || 'direct'; 
-
-    window.onload = async () => {
-        try {
-            const res = await fetch(API_URL);
-            const data = await res.json();
+        <!-- شروع -->
+        <div id="start-screen" class="hidden fade-enter">
+            <h1 id="site-title">...</h1>
+            <p id="site-subtitle" class="subtitle">...</p>
             
-            document.getElementById('loader').classList.add('hidden');
+            <div style="text-align: right;">
+                <label style="color:#fff; margin-bottom:5px; display:block;">نام شما</label>
+                <input type="text" id="user-name" class="form-control" placeholder="وارد کنید...">
+                <br>
+                <label style="color:#fff; margin-bottom:5px; display:block;">سن</label>
+                <input type="number" id="user-age" class="form-control" placeholder="مثال: 22">
+            </div>
             
-            if (data.config) {
-                config = data.config;
+            <div class="nav-buttons">
+                <button class="btn-primary" id="btn-start" onclick="startQuiz()">شروع</button>
+            </div>
+        </div>
+
+        <!-- سوالات -->
+        <div id="quiz-screen" class="hidden">
+            <div id="question-box" class="fade-enter"></div>
+            <div class="nav-buttons">
+                <button class="btn-secondary" id="btn-prev" onclick="prevStep()">قبلی</button>
+                <button class="btn-primary" id="btn-next" onclick="nextStep()">بعدی</button>
+            </div>
+        </div>
+
+        <!-- پایان -->
+        <div id="end-screen" class="hidden fade-enter" style="text-align: center; padding-top: 20px;">
+            <div id="end-emoji" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
+            <h2 id="end-title" style="color: var(--primary);">ثبت شد!</h2>
+            <p id="end-msg" style="color: var(--text-sub);">اطلاعات شما با موفقیت ذخیره گردید.</p>
+            <div id="social-area" class="social-links hidden"></div>
+        </div>
+    </div>
+
+    <div class="signature">Designed for <span>Economic Research</span> © 2025</div>
+
+    <script>
+        // ******************************************************
+        // 👇 لینک وب‌اپلیکیشن خودت رو اینجا بذار 👇
+        const API_URL = "https://script.google.com/macros/s/AKfycbyWxDc8QN0lQfG71-m8d4ipuugZ25hPnXVhAmSH68mbrU74JIxP265Q1YJtVM4UgCKczA/exec";
+        // ******************************************************
+
+        let questions = [];
+        let config = {};
+        let answers = {};
+        let currentStep = 0;
+        let questionStartTime = 0;
+        let timeLogs = {}; 
+        const urlParams = new URLSearchParams(window.location.search);
+        const sourceRef = urlParams.get('ref') || 'direct'; 
+
+        window.onload = async () => {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                document.getElementById('loader').classList.add('hidden');
                 
-                // *** ضد اسپم هوشمند + نمایش لینک سوشال ***
-                const completedQuizzes = JSON.parse(localStorage.getItem('completed_quizzes') || "[]");
-                
-                if (config.title && completedQuizzes.includes(config.title)) {
-                    document.getElementById('start-screen').classList.add('hidden');
-                    document.getElementById('end-screen').classList.remove('hidden');
-                    
-                    document.getElementById('end-title').innerText = "✅ قبلاً شرکت کرده‌اید";
-                    document.getElementById('end-title').style.color = "#2ed573";
-                    document.getElementById('end-msg').innerHTML = `شما قبلاً در آزمون <b>"${config.title}"</b> شرکت کرده‌اید.<br>برای پیگیری نتایج، ما را دنبال کنید:`;
-                    document.getElementById('end-emoji').innerText = "✋";
-                    
-                    // مهم: نمایش لینک‌ها برای کاربر تکراری
-                    renderSocialLinks();
-                    return;
+                if (data.config) {
+                    config = data.config;
+                    // ضد اسپم + نمایش سوشال مدیا
+                    const completedQuizzes = JSON.parse(localStorage.getItem('completed_quizzes') || "[]");
+                    if (config.title && completedQuizzes.includes(config.title)) {
+                        document.getElementById('start-screen').classList.add('hidden');
+                        document.getElementById('end-screen').classList.remove('hidden');
+                        document.getElementById('end-title').innerText = "قبلاً شرکت کرده‌اید";
+                        document.getElementById('end-msg').innerHTML = `شما قبلاً در آزمون <b>"${config.title}"</b> شرکت کرده‌اید.`;
+                        document.getElementById('end-emoji').innerText = "✋";
+                        renderSocialLinks();
+                        return;
+                    }
+                    if(config.title) document.getElementById('site-title').innerText = config.title;
+                    if(config.subtitle) document.getElementById('site-subtitle').innerText = config.subtitle;
+                    if(config.btn_start) document.getElementById('btn-start').innerText = config.btn_start;
+                    if(config.success_msg) document.getElementById('end-msg').innerText = config.success_msg;
+                    if(config.end_emoji) document.getElementById('end-emoji').innerText = config.end_emoji;
                 }
 
-                if(config.title) document.getElementById('site-title').innerText = config.title;
-                if(config.subtitle) document.getElementById('site-subtitle').innerText = config.subtitle;
-                if(config.btn_start) document.getElementById('btn-start').innerText = config.btn_start;
-                if(config.success_msg) document.getElementById('end-msg').innerText = config.success_msg;
-                if(config.end_emoji) document.getElementById('end-emoji').innerText = config.end_emoji;
+                if (!data.active) {
+                    document.querySelector('.container').innerHTML = `<div style="text-align:center; padding:20px; color:#fff;"><h2>⛔ آزمون غیرفعال است</h2></div>`;
+                    return;
+                }
+                questions = data.questions;
+                document.getElementById('start-screen').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                alert("خطا در اتصال به سرور.");
             }
-
-            if (!data.active) {
-                document.querySelector('.container').innerHTML = `<div style="text-align:center; padding:20px;"><h2>⛔ آزمون غیرفعال است</h2><p>مهلت شرکت در این آزمون به پایان رسیده است.</p></div>`;
-                return;
-            }
-
-            questions = data.questions;
-            document.getElementById('start-screen').classList.remove('hidden');
-
-        } catch (e) {
-            console.error(e);
-            alert("خطا در اتصال به سرور.");
-        }
-    };
-
-    function startQuiz() {
-        const name = document.getElementById('user-name').value;
-        const age = document.getElementById('user-age').value;
-        if(!name || !age) return alert("لطفا نام و سن را تکمیل کنید");
-
-        document.getElementById('start-screen').classList.add('hidden');
-        document.getElementById('quiz-screen').classList.remove('hidden');
-        
-        currentStep = 0;
-        showQuestion(currentStep);
-    }
-
-    function showQuestion(index) {
-        const qBox = document.getElementById('question-box');
-        const q = questions[index];
-        const progress = ((index + 1) / questions.length) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
-
-        questionStartTime = Date.now();
-
-        const badge = q.required ? '<span style="color:#e84118; margin-right:5px">*</span>' : '';
-        let inputHtml = '';
-        const savedAns = answers[q.id] || "";
-
-        if (q.type === 'radio') {
-            q.options.forEach(opt => {
-                const checked = savedAns === opt ? 'checked' : '';
-                inputHtml += `
-                <label class="radio-option">
-                    <input type="radio" name="q_${q.id}" value="${opt}" ${checked} onchange="saveAns(${q.id}, '${opt}')">
-                    ${opt}
-                </label>`;
-            });
-        } else if (q.type === 'text') {
-            inputHtml = `<textarea class="form-control" rows="4" placeholder="پاسخ خود را بنویسید..." oninput="saveAns(${q.id}, this.value)">${savedAns}</textarea>`;
-        } else if (q.type === 'number') {
-            inputHtml = `<input type="number" class="form-control" value="${savedAns}" placeholder="فقط عدد وارد کنید" oninput="saveAns(${q.id}, this.value)">`;
-        } else if (q.type === 'range') {
-            const val = savedAns || "50";
-            if(!savedAns) saveAns(q.id, val);
-            inputHtml = `
-            <div class="range-wrap">
-                <div class="range-display" id="val_disp">${val}%</div>
-                <input type="range" min="0" max="100" value="${val}" oninput="document.getElementById('val_disp').innerText=this.value+'%'; saveAns(${q.id}, this.value)">
-                <div style="display:flex; justify-content:space-between; color:#a4b0be; font-size:0.8rem; margin-top:5px;"><span>کمترین</span><span>بیشترین</span></div>
-            </div>`;
-        }
-
-        qBox.innerHTML = `<h3 style="margin-bottom:20px; line-height:1.5; font-size:1.1rem;">${badge} ${index + 1}. ${q.text}</h3>${inputHtml}`;
-        
-        qBox.classList.remove('fade-enter');
-        void qBox.offsetWidth;
-        qBox.classList.add('fade-enter');
-
-        document.getElementById('btn-prev').style.visibility = index === 0 ? 'hidden' : 'visible';
-        
-        const nextBtn = document.getElementById('btn-next');
-        if (index === questions.length - 1) {
-            nextBtn.innerText = config.btn_submit || "ثبت نهایی";
-            nextBtn.style.background = "#2ed573";
-        } else {
-            nextBtn.innerText = "تایید و بعدی";
-            nextBtn.style.background = "";
-        }
-    }
-
-    function saveAns(qid, val) { answers[qid] = val; }
-
-    function recordTime() {
-        const qId = questions[currentStep].id;
-        timeLogs[qId] = ((Date.now() - questionStartTime) / 1000).toFixed(1);
-    }
-
-    function nextStep() {
-        const q = questions[currentStep];
-        if (q.required && !answers[q.id]) {
-            alert("پاسخ به این سوال الزامی است.");
-            return;
-        }
-        
-        recordTime();
-
-        if (currentStep === questions.length - 1) {
-            submitData();
-        } else {
-            currentStep++;
-            showQuestion(currentStep);
-        }
-    }
-
-    function prevStep() {
-        if (currentStep > 0) {
-            currentStep--;
-            showQuestion(currentStep);
-        }
-    }
-
-    async function submitData() {
-        const btn = document.getElementById('btn-next');
-        btn.disabled = true;
-        btn.innerText = "درحال ارسال...";
-
-        const answersPayload = Object.keys(answers).map(k => ({ 
-            qId: k, 
-            answer: answers[k],
-            time: timeLogs[k] || 0
-        }));
-
-        const payload = {
-            name: document.getElementById('user-name').value,
-            age: document.getElementById('user-age').value,
-            source: sourceRef,
-            answers: answersPayload
         };
 
-        try {
-            await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-            
-            // ثبت در حافظه مرورگر برای جلوگیری از شرکت مجدد
-            const completedQuizzes = JSON.parse(localStorage.getItem('completed_quizzes') || "[]");
-            if (config.title && !completedQuizzes.includes(config.title)) {
-                completedQuizzes.push(config.title);
-                localStorage.setItem('completed_quizzes', JSON.stringify(completedQuizzes));
+        function startQuiz() {
+            const name = document.getElementById('user-name').value;
+            const age = document.getElementById('user-age').value;
+            if(!name || !age) return alert("لطفا نام و سن را تکمیل کنید");
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            currentStep = 0;
+            showQuestion(currentStep);
+        }
+
+        function showQuestion(index) {
+            const qBox = document.getElementById('question-box');
+            const q = questions[index];
+            const progress = ((index + 1) / questions.length) * 100;
+            document.querySelector('.progress-bar').style.width = `${progress}%`;
+            questionStartTime = Date.now();
+
+            const badge = q.required ? '<span style="color:#ff4757; margin-right:5px">*</span>' : '';
+            let inputHtml = '';
+            const savedAns = answers[q.id] || "";
+
+            if (q.type === 'radio') {
+                q.options.forEach(opt => {
+                    const checked = savedAns === opt ? 'checked' : '';
+                    inputHtml += `<label class="radio-option"><input type="radio" name="q_${q.id}" value="${opt}" ${checked} onchange="saveAns(${q.id}, '${opt}')">${opt}</label>`;
+                });
+            } else if (q.type === 'text') {
+                inputHtml = `<textarea class="form-control" rows="4" placeholder="پاسخ دهید..." oninput="saveAns(${q.id}, this.value)">${savedAns}</textarea>`;
+            } else if (q.type === 'number') {
+                inputHtml = `<input type="number" class="form-control" value="${savedAns}" placeholder="عدد" oninput="saveAns(${q.id}, this.value)">`;
+            } else if (q.type === 'range') {
+                const val = savedAns || "50";
+                if(!savedAns) saveAns(q.id, val);
+                inputHtml = `<div class="range-wrap"><div class="range-display" id="val_disp">${val}%</div><input type="range" min="0" max="100" value="${val}" oninput="document.getElementById('val_disp').innerText=this.value+'%'; saveAns(${q.id}, this.value)"></div>`;
             }
-            
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('end-screen').classList.remove('hidden');
 
-            renderSocialLinks();
+            qBox.innerHTML = `<h3 style="margin-bottom:20px; line-height:1.5; font-size:1.1rem; color:#fff;">${badge} ${index + 1}. ${q.text}</h3>${inputHtml}`;
+            qBox.classList.remove('fade-enter'); void qBox.offsetWidth; qBox.classList.add('fade-enter');
 
-        } catch (e) {
-            alert("خطا در ارسال اطلاعات.");
-            btn.disabled = false;
-            btn.innerText = "تلاش مجدد";
+            document.getElementById('btn-prev').style.visibility = index === 0 ? 'hidden' : 'visible';
+            const nextBtn = document.getElementById('btn-next');
+            if (index === questions.length - 1) {
+                nextBtn.innerText = config.btn_submit || "ثبت نهایی";
+                nextBtn.style.background = "#2ed573";
+                nextBtn.style.color = "#fff";
+            } else {
+                nextBtn.innerText = "بعدی";
+                nextBtn.style.background = ""; // Reset
+                nextBtn.style.color = "";
+            }
         }
-    }
 
-    function renderSocialLinks() {
-        const container = document.getElementById('social-area');
-        let html = '';
-        if(config.link_twitter) html += `<a href="${config.link_twitter}" target="_blank" class="social-btn">Twitter / X</a>`;
-        if(config.link_telegram) html += `<a href="${config.link_telegram}" target="_blank" class="social-btn">Telegram</a>`;
-        if(config.link_linkedin) html += `<a href="${config.link_linkedin}" target="_blank" class="social-btn">LinkedIn</a>`;
-        
-        if(html) {
-            container.innerHTML = html;
-            container.classList.remove('hidden');
+        function saveAns(qid, val) { answers[qid] = val; }
+        function recordTime() {
+            const qId = questions[currentStep].id;
+            timeLogs[qId] = ((Date.now() - questionStartTime) / 1000).toFixed(1);
         }
-    }
-</script>
+        function nextStep() {
+            const q = questions[currentStep];
+            if (q.required && !answers[q.id]) { alert("پاسخ الزامی است."); return; }
+            recordTime();
+            if (currentStep === questions.length - 1) submitData();
+            else { currentStep++; showQuestion(currentStep); }
+        }
+        function prevStep() { if (currentStep > 0) { currentStep--; showQuestion(currentStep); } }
 
+        async function submitData() {
+            const btn = document.getElementById('btn-next');
+            btn.disabled = true; btn.innerText = "ارسال...";
+            const answersPayload = Object.keys(answers).map(k => ({ qId: k, answer: answers[k], time: timeLogs[k] || 0 }));
+            const payload = { name: document.getElementById('user-name').value, age: document.getElementById('user-age').value, source: sourceRef, answers: answersPayload };
+
+            try {
+                await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+                const completedQuizzes = JSON.parse(localStorage.getItem('completed_quizzes') || "[]");
+                if (config.title && !completedQuizzes.includes(config.title)) {
+                    completedQuizzes.push(config.title);
+                    localStorage.setItem('completed_quizzes', JSON.stringify(completedQuizzes));
+                }
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('end-screen').classList.remove('hidden');
+                renderSocialLinks();
+            } catch (e) {
+                alert("خطا در ارسال.");
+                btn.disabled = false; btn.innerText = "تلاش مجدد";
+            }
+        }
+
+        function renderSocialLinks() {
+            const container = document.getElementById('social-area');
+            let html = '';
+            if(config.link_twitter) html += `<a href="${config.link_twitter}" target="_blank" class="social-btn">Twitter</a>`;
+            if(config.link_telegram) html += `<a href="${config.link_telegram}" target="_blank" class="social-btn">Telegram</a>`;
+            if(config.link_linkedin) html += `<a href="${config.link_linkedin}" target="_blank" class="social-btn">LinkedIn</a>`;
+            if(html) { container.innerHTML = html; container.classList.remove('hidden'); }
+        }
+    </script>
 </body>
 </html>
-
